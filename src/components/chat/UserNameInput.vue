@@ -13,7 +13,21 @@
           :class="{ selected: selectedAvatar === avatar }"
           @click="selectAvatar(avatar)"
         >
-          <img :src="avatar" alt="头像选项" class="avatar-img" />
+          <img 
+            :src="avatar" 
+            alt="头像选项" 
+            class="avatar-img" 
+            @error="handleAvatarError"
+          />
+        </div>
+        
+        <!-- 刷新头像按钮 -->
+        <div 
+          class="avatar-option refresh-avatar"
+          @click="regenerateAvatars"
+          title="刷新头像选项"
+        >
+          <div class="refresh-icon">↻</div>
         </div>
         
         <!-- 自定义头像上传 -->
@@ -22,7 +36,12 @@
           :class="{ selected: isCustomAvatarSelected }"
         >
           <label for="avatar-upload" class="custom-avatar-label">
-            <img :src="customAvatarPreview || '/avatars/default.png'" alt="自定义头像" class="avatar-img" />
+            <img 
+              :src="customAvatarPreview || getFallbackAvatarUrl()" 
+              alt="自定义头像" 
+              class="avatar-img"
+              @error="handleAvatarError"
+            />
             <div class="upload-icon" v-if="!customAvatarPreview">+</div>
           </label>
           <input 
@@ -76,7 +95,7 @@
 </template>
 
 <script>
-import { getRandomAvatarUrl, getRandomDefaultAvatarUrl } from '../../utils/avatarUtils';
+import { getRandomAvatarUrl, getRandomDefaultAvatarUrl, getFallbackAvatarUrl, handleAvatarError } from '../../utils/avatarUtils';
 
 export default {
   name: 'UserNameInput',
@@ -102,8 +121,21 @@ export default {
       this.selectTheme(savedTheme);
     }
     
-    // 生成6个默认头像
+    // 生成默认头像
     this.generateDefaultAvatars();
+    
+    // 尝试从localStorage恢复用户名和头像
+    const savedUsername = localStorage.getItem('chat-username');
+    const savedAvatar = localStorage.getItem('chat-avatar');
+    
+    if (savedUsername) {
+      this.username = savedUsername;
+    }
+    
+    if (savedAvatar) {
+      this.selectedAvatar = savedAvatar;
+      this.isCustomAvatarSelected = !this.defaultAvatars.includes(savedAvatar);
+    }
   },
   methods: {
     // 生成默认头像
@@ -117,7 +149,14 @@ export default {
       }
       
       // 默认选择第一个头像
-      this.selectedAvatar = this.defaultAvatars[0];
+      if (!this.selectedAvatar) {
+        this.selectedAvatar = this.defaultAvatars[0];
+      }
+    },
+    
+    // 重新生成头像
+    regenerateAvatars() {
+      this.generateDefaultAvatars();
     },
     
     // 根据用户名更新头像
@@ -141,6 +180,10 @@ export default {
           username: this.username,
           avatar: this.selectedAvatar
         });
+        
+        // 保存到localStorage
+        localStorage.setItem('chat-username', this.username);
+        localStorage.setItem('chat-avatar', this.selectedAvatar);
         
         // 保存主题选择
         localStorage.setItem('chat-theme', this.selectedTheme);
@@ -194,6 +237,16 @@ export default {
       
       // 读取文件
       reader.readAsDataURL(file);
+    },
+    
+    // 获取备用头像URL
+    getFallbackAvatarUrl() {
+      return getFallbackAvatarUrl();
+    },
+    
+    // 处理头像加载错误
+    handleAvatarError(event) {
+      handleAvatarError(event);
     }
   }
 }
@@ -324,6 +377,25 @@ export default {
   opacity: 0;
   overflow: hidden;
   z-index: -1;
+}
+
+.refresh-avatar {
+  background-color: rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.refresh-icon {
+  font-size: 1.5rem;
+  color: var(--text-color);
+  opacity: 0.7;
+  transition: transform 0.3s ease;
+}
+
+.refresh-avatar:hover .refresh-icon {
+  transform: rotate(180deg);
+  opacity: 1;
 }
 
 .theme-options {

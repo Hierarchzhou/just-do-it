@@ -14,6 +14,7 @@
             :src="getCurrentUserAvatar()" 
             alt="当前用户头像" 
             class="user-avatar"
+            @error="handleAvatarError"
           />
           <div class="user-status online"></div>
         </div>
@@ -34,9 +35,10 @@
       >
         <div class="user-avatar-container">
           <img 
-            :src="user.avatar || '/avatars/default.png'" 
+            :src="user.avatar || getFallbackAvatarUrl()" 
             alt="用户头像" 
             class="user-avatar"
+            @error="handleAvatarError"
           />
           <div class="user-status online"></div>
         </div>
@@ -55,6 +57,8 @@
 </template>
 
 <script>
+import { getFallbackAvatarUrl, handleAvatarError } from '../../utils/avatarUtils';
+
 export default {
   name: 'OnlineUsersSidebar',
   props: {
@@ -79,7 +83,17 @@ export default {
     // 获取当前用户的头像
     getCurrentUserAvatar() {
       const currentUser = this.onlineUsers.find(user => user.username === this.currentUsername);
-      return currentUser ? currentUser.avatar : '/avatars/default.png';
+      return currentUser ? currentUser.avatar : this.getFallbackAvatarUrl();
+    },
+    
+    // 获取备用头像URL
+    getFallbackAvatarUrl() {
+      return getFallbackAvatarUrl();
+    },
+    
+    // 处理头像加载错误
+    handleAvatarError(event) {
+      handleAvatarError(event);
     }
   }
 }

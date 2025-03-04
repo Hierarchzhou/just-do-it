@@ -10,7 +10,12 @@
         class="message-item"
       >
         <div class="message-avatar">
-          <img :src="message.avatar || '/avatars/default.png'" alt="头像" class="avatar-img" />
+          <img 
+            :src="message.avatar || getFallbackAvatarUrl()" 
+            alt="头像" 
+            class="avatar-img" 
+            @error="handleAvatarError"
+          />
         </div>
         <div 
           class="message"
@@ -28,6 +33,8 @@
 </template>
 
 <script>
+import { getFallbackAvatarUrl, handleAvatarError } from '../../utils/avatarUtils';
+
 export default {
   name: 'MessageList',
   props: {
@@ -69,6 +76,16 @@ export default {
       if (this.$refs.messageContainer) {
         this.$refs.messageContainer.scrollTop = this.$refs.messageContainer.scrollHeight;
       }
+    },
+    
+    // 获取备用头像URL
+    getFallbackAvatarUrl() {
+      return getFallbackAvatarUrl();
+    },
+    
+    // 处理头像加载错误
+    handleAvatarError(event) {
+      handleAvatarError(event);
     }
   },
   updated() {

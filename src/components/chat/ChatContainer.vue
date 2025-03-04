@@ -13,7 +13,12 @@
         <div class="user-info-container">
           <ThemeSelector />
           <div class="user-info">
-            <img :src="userAvatar" alt="用户头像" class="user-avatar">
+            <img 
+              :src="userAvatar || getFallbackAvatarUrl()" 
+              alt="用户头像" 
+              class="user-avatar"
+              @error="handleAvatarError"
+            >
             <span class="current-username">{{ username }}</span>
           </div>
         </div>
@@ -38,6 +43,7 @@ import MessageList from './MessageList.vue';
 import MessageInput from './MessageInput.vue';
 import ThemeSelector from './ThemeSelector.vue';
 import axios from 'axios';
+import { handleAvatarError, getFallbackAvatarUrl } from '../../utils/avatarUtils';
 
 export default {
   name: 'ChatContainer',
@@ -248,6 +254,14 @@ export default {
           }
         });
       }
+    },
+    // 处理头像加载错误
+    handleAvatarError(event) {
+      handleAvatarError(event);
+    },
+    // 获取备用头像URL
+    getFallbackAvatarUrl() {
+      return getFallbackAvatarUrl();
     }
   }
 }
