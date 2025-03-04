@@ -1,0 +1,494 @@
+/* 主题样式文件 */
+
+/* Discord主题 - 默认主题 */
+.theme-discord {
+  --primary-color: #7289da;
+  --secondary-color: #5c6bc0;
+  --background-color: #36393f;
+  --chat-background: #36393f;
+  --header-color: #ffffff;
+  --text-color: #dcddde;
+  --timestamp-color: #72767d;
+  --self-message-bg: #7289da;
+  --self-message-color: #ffffff;
+  --other-message-bg: #40444b;
+  --other-message-color: #dcddde;
+  --input-background: #40444b;
+  --input-color: #dcddde;
+  --input-placeholder: #72767d;
+  --online-indicator: #43b581;
+  --header-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --message-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  --scrollbar-thumb: #202225;
+  --scrollbar-track: #2e3338;
+  --background-image: none;
+  --card-border-radius: 0.5rem;
+  --sidebar-width: 240px;
+}
+
+/* 暗黑模式主题 */
+.theme-dark {
+  --primary-color: #bb86fc;
+  --secondary-color: #a370f7;
+  --background-color: #121212;
+  --chat-background: #1e1e1e;
+  --header-color: #ffffff;
+  --text-color: #e0e0e0;
+  --timestamp-color: #a0a0a0;
+  --self-message-bg: #bb86fc;
+  --self-message-color: #121212;
+  --other-message-bg: #2d2d2d;
+  --other-message-color: #e0e0e0;
+  --input-background: #2d2d2d;
+  --input-color: #e0e0e0;
+  --input-placeholder: #a0a0a0;
+  --online-indicator: #03dac6;
+  --header-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --message-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --scrollbar-thumb: #424242;
+  --scrollbar-track: #1e1e1e;
+  --background-image: none;
+  --card-border-radius: 0.5rem;
+  --sidebar-width: 240px;
+}
+
+/* 明亮模式主题 */
+.theme-light {
+  --primary-color: #4f9eed;
+  --secondary-color: #3d8edb;
+  --background-color: #ffffff;
+  --chat-background: #f5f5f5;
+  --header-color: #ffffff;
+  --text-color: #2e3338;
+  --timestamp-color: #72767d;
+  --self-message-bg: #4f9eed;
+  --self-message-color: #ffffff;
+  --other-message-bg: #e4e6eb;
+  --other-message-color: #2e3338;
+  --input-background: #ffffff;
+  --input-color: #2e3338;
+  --input-placeholder: #72767d;
+  --online-indicator: #43b581;
+  --header-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --message-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --scrollbar-thumb: #c4c4c4;
+  --scrollbar-track: #f0f0f0;
+  --background-image: none;
+  --card-border-radius: 0.5rem;
+  --sidebar-width: 240px;
+}
+
+/* 复古风格主题 */
+.theme-retro {
+  --primary-color: #008080; /* 青绿色 */
+  --secondary-color: #006666;
+  --background-color: #c0c0c0; /* 银灰色 */
+  --chat-background: #c0c0c0;
+  --message-background: #e0e0e0;
+  --text-color: #000000;
+  --header-color: #ffffff;
+  --input-background: #ffffff;
+  --input-text-color: #000000;
+  --input-border-color: #808080;
+  --username-color: #800080; /* 紫色 */
+  --timestamp-color: #808080;
+  --background-image: none;
+  --message-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --card-border-radius: 0;
+  --header-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --sidebar-width: 240px;
+}
+
+/* 文艺电影风格主题 */
+.theme-cinematic {
+  --primary-color: #8a7158; /* 更柔和的棕褐色 */
+  --secondary-color: #5d4c3c; /* 深棕色 */
+  --background-color: #1a1a1a; /* 深黑色背景 */
+  --chat-background: rgba(26, 26, 26, 0.7); /* 半透明深色背景 */
+  --header-color: #f0e6d8; /* 米白色文字 */
+  --text-color: #e6dfd5; /* 浅米色文字 */
+  --timestamp-color: #b3a89c; /* 浅棕色时间戳 */
+  --self-message-bg: rgba(138, 113, 88, 0.2); /* 半透明棕色 */
+  --self-message-color: #e6dfd5; /* 浅米色文字 */
+  --other-message-bg: rgba(40, 40, 40, 0.5); /* 半透明深灰色 */
+  --other-message-color: #e6dfd5; /* 浅米色文字 */
+  --input-background: rgba(40, 40, 40, 0.5); /* 半透明深灰色 */
+  --input-color: #e6dfd5; /* 浅米色文字 */
+  --input-placeholder: #b3a89c; /* 浅棕色占位符 */
+  --online-indicator: #a3b18a; /* 柔和的橄榄绿 */
+  --header-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* 更深的阴影 */
+  --message-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* 更深的阴影 */
+  --scrollbar-thumb: #5d4c3c; /* 深棕色滚动条 */
+  --scrollbar-track: #2a2520; /* 深棕黑色滚动条轨道 */
+  
+  /* 文艺电影特有的背景图片 */
+  --background-image: url('../assets/images/cinematic-bg.jpg');
+  --background-overlay: linear-gradient(rgba(26, 26, 26, 0.7), rgba(26, 26, 26, 0.8));
+  --film-grain: url('data:image/png;base64,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');
+}
+
+/* 80年代合成波风格主题(Synthwave) */
+.theme-synthwave {
+  --primary-color: #ff00ff; /* 霓虹粉色 */
+  --secondary-color: #00ffff; /* 霓虹青色 */
+  --background-color: #0f0f23; /* 深蓝色背景 */
+  --chat-background: rgba(15, 15, 35, 0.8); /* 半透明深蓝色 */
+  --header-color: #ffffff; /* 白色文本 */
+  --text-color: #f1f1f1; /* 亮文本 */
+  --timestamp-color: #a970ff; /* 紫色时间戳 */
+  --self-message-bg: rgba(255, 0, 255, 0.2); /* 半透明粉色 */
+  --other-message-bg: rgba(0, 255, 255, 0.1); /* 半透明青色 */
+  --input-background: rgba(15, 15, 35, 0.8); /* 输入框背景 */
+  --message-shadow: 0 0 10px rgba(255, 0, 255, 0.3); /* 消息阴影 */
+  --header-shadow: 0 2px 10px rgba(255, 0, 255, 0.3); /* 头部阴影 */
+  --input-placeholder: rgba(255, 255, 255, 0.4); /* 输入框占位符 */
+  --input-color: #ffffff; /* 输入框文本 */
+  --input-border-color: rgba(255, 0, 255, 0.3); /* 输入框边框 */
+  --online-indicator: #00ffff; /* 在线指示器 */
+  --primary-color-rgb: 255, 0, 255; /* 主色RGB */
+  --secondary-color-rgb: 0, 255, 255; /* 次色RGB */
+  --background-image: linear-gradient(to bottom, #0f0f23, #2b0a3d); /* 使用CSS渐变替代图片 */
+}
+
+/* 朋克风格主题 */
+.theme-punk {
+  --primary-color: #ff3d00; /* 明亮的橙色 */
+  --secondary-color: #a30000; /* 深红色 */
+  --background-color: #1a1a1a; /* 暗黑色 */
+  --chat-background: rgba(26, 26, 26, 0.8); /* 半透明暗黑色 */
+  --header-color: #ffffff; /* 白色文本 */
+  --text-color: #f1f1f1; /* 亮文本 */
+  --timestamp-color: #ff3d00; /* 橙色时间戳 */
+  --self-message-bg: rgba(255, 61, 0, 0.2); /* 半透明橙色 */
+  --other-message-bg: rgba(26, 26, 26, 0.9); /* 半透明暗黑色 */
+  --input-background: rgba(15, 15, 15, 0.9); /* 输入框背景 */
+  --message-shadow: 0 0 10px rgba(255, 61, 0, 0.3); /* 消息阴影 */
+  --header-shadow: 0 2px 10px rgba(255, 61, 0, 0.3); /* 头部阴影 */
+  --input-placeholder: rgba(255, 255, 255, 0.4); /* 输入框占位符 */
+  --input-color: #ffffff; /* 输入框文本 */
+  --input-border-color: rgba(255, 61, 0, 0.5); /* 输入框边框 */
+  --online-indicator: #ff3d00; /* 在线指示器 */
+  --primary-color-rgb: 255, 61, 0; /* 主色RGB */
+  --secondary-color-rgb: 163, 0, 0; /* 次色RGB */
+  --background-image: linear-gradient(45deg, #1a1a1a 25%, #2e2e2e 25%, #2e2e2e 50%, #1a1a1a 50%, #1a1a1a 75%, #2e2e2e 75%, #2e2e2e 100%); /* 使用CSS条纹图案替代图片 */
+}
+
+/* 70年代迪斯科风格主题 */
+.theme-disco {
+  --primary-color: #ea00ff; /* 亮紫色 */
+  --secondary-color: #00b4ff; /* 亮蓝色 */
+  --background-color: #120024; /* 深紫色背景 */
+  --chat-background: rgba(18, 0, 36, 0.8); /* 半透明深紫色 */
+  --header-color: #ffffff; /* 白色文本 */
+  --text-color: #f1f1f1; /* 亮文本 */
+  --timestamp-color: #00ffcc; /* 青色时间戳 */
+  --self-message-bg: rgba(234, 0, 255, 0.2); /* 半透明紫色 */
+  --other-message-bg: rgba(0, 180, 255, 0.1); /* 半透明蓝色 */
+  --input-background: rgba(18, 0, 36, 0.8); /* 输入框背景 */
+  --message-shadow: 0 0 15px rgba(234, 0, 255, 0.4); /* 消息阴影 */
+  --header-shadow: 0 2px 10px rgba(234, 0, 255, 0.4); /* 头部阴影 */
+  --input-placeholder: rgba(255, 255, 255, 0.4); /* 输入框占位符 */
+  --input-color: #ffffff; /* 输入框文本 */
+  --input-border-color: rgba(234, 0, 255, 0.3); /* 输入框边框 */
+  --online-indicator: #00ffcc; /* 在线指示器 */
+  --primary-color-rgb: 234, 0, 255; /* 主色RGB */
+  --secondary-color-rgb: 0, 180, 255; /* 次色RGB */
+  --background-image: radial-gradient(circle, #5a0069 0%, #250030 50%, #120024 100%); /* 使用CSS渐变替代图片 */
+}
+
+/* 应用主题变量的全局样式 */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  background-image: var(--background-image);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+/* 文艺电影主题特定的全局样式 */
+body.theme-cinematic {
+  font-family: 'Playfair Display', 'Times New Roman', serif;
+  letter-spacing: 0.3px;
+  line-height: 1.6;
+}
+
+/* 文艺电影主题的背景 */
+body.theme-cinematic::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: var(--background-image);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.8;
+  z-index: -2;
+}
+
+/* 文艺电影主题的叠加层 */
+body.theme-cinematic::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--background-overlay);
+  background-image: var(--film-grain);
+  opacity: 0.1;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Synthwave主题的背景 */
+body.theme-synthwave::before {
+  opacity: 1;
+  background: var(--background-image);
+  background-size: cover;
+  background-position: center;
+  background-color: var(--background-color);
+}
+
+/* Synthwave主题的网格叠加和扫描线效果 */
+body.theme-synthwave::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--background-overlay);
+  background-image: var(--scanline);
+  opacity: 0.15;
+  z-index: -1;
+  pointer-events: none;
+  animation: scanline 8s linear infinite;
+}
+
+/* 朋克风格主题的背景 */
+body.theme-punk::before {
+  opacity: 1;
+  background: var(--background-image);
+  background-size: 20px 20px; /* 设置条纹尺寸 */
+  background-position: center;
+  background-color: var(--background-color);
+}
+
+/* 朋克风格主题的叠加层效果 */
+body.theme-punk::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--background-overlay);
+  background-image: var(--ripped-effect);
+  opacity: 0.1;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* 迪斯科风格主题的背景 */
+body.theme-disco::before {
+  opacity: 1;
+  background: var(--background-image);
+  background-size: cover;
+  background-position: center;
+  background-color: var(--background-color);
+}
+
+/* 迪斯科风格主题的叠加层效果 */
+body.theme-disco::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--background-overlay);
+  background-image: var(--glitter-effect);
+  opacity: 0.2;
+  z-index: -1;
+  pointer-events: none;
+  animation: discoGlitter 2s linear infinite;
+}
+
+/* 添加一些动画效果 */
+@keyframes scanline {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 100vh; }
+}
+
+@keyframes discoPulse {
+  0% { opacity: 0.7; }
+  100% { opacity: 0.9; }
+}
+
+@keyframes discoGlitter {
+  0% { opacity: 0.1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(1.01); }
+  100% { opacity: 0.1; transform: scale(1); }
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--scrollbar-track);
+}
+
+/* 文艺电影主题的滚动条 */
+body.theme-cinematic ::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 输入框样式 */
+input, textarea, button {
+  font-family: inherit;
+}
+
+/* 文艺电影主题的输入框 */
+body.theme-cinematic input,
+body.theme-cinematic textarea,
+body.theme-cinematic button {
+  font-family: 'Playfair Display', 'Times New Roman', serif;
+  letter-spacing: 0.5px;
+}
+
+/* 文艺电影主题的输入框 */
+body.theme-cinematic input,
+body.theme-cinematic textarea,
+body.theme-cinematic button {
+  font-family: 'Playfair Display', 'Times New Roman', serif;
+  letter-spacing: 0.5px;
+}
+
+/* Synthwave主题的输入框和按钮 */
+body.theme-synthwave input,
+body.theme-synthwave textarea,
+body.theme-synthwave button {
+  font-family: 'VT323', 'Courier New', monospace;
+  letter-spacing: 1px;
+  text-shadow: 0 0 5px var(--primary-color);
+  border-color: var(--primary-color) !important;
+}
+
+body.theme-synthwave button {
+  box-shadow: 0 0 15px var(--primary-color);
+  text-transform: uppercase;
+}
+
+body.theme-synthwave .message {
+  box-shadow: var(--neon-glow);
+  border: 1px solid rgba(255, 0, 255, 0.3);
+}
+
+body.theme-synthwave .message-sender {
+  color: var(--secondary-color);
+  text-shadow: 0 0 5px var(--secondary-color);
+}
+
+/* 朋克风格主题的输入框和按钮 */
+body.theme-punk input,
+body.theme-punk textarea,
+body.theme-punk button {
+  font-family: 'Special Elite', 'Courier New', monospace;
+  transform: rotate(-1deg);
+  border: 2px dashed var(--primary-color) !important;
+}
+
+body.theme-punk button {
+  background-image: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+  text-transform: uppercase;
+  clip-path: polygon(0% 15%, 15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%);
+  padding: 0.8rem 1.5rem;
+}
+
+body.theme-punk .message {
+  transform: rotate(1deg);
+  clip-path: polygon(0% 0%, 100% 4%, 96% 100%, 4% 96%);
+  border: none;
+}
+
+body.theme-punk .message-sender {
+  mix-blend-mode: difference;
+  font-weight: bold;
+}
+
+/* 迪斯科风格主题的输入框和按钮 */
+body.theme-disco input,
+body.theme-disco textarea,
+body.theme-disco button {
+  font-family: 'Dancing Script', cursive;
+  border-radius: 20px !important;
+  border: 2px solid var(--primary-color) !important;
+}
+
+body.theme-disco button {
+  background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+  box-shadow: 0 0 10px var(--primary-color);
+  text-transform: capitalize;
+}
+
+body.theme-disco .message {
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--other-message-bg), rgba(0, 0, 0, 0.5));
+  box-shadow: 0 0 10px rgba(218, 112, 214, 0.3);
+}
+
+body.theme-disco .message.self {
+  background: linear-gradient(135deg, var(--self-message-bg), rgba(218, 112, 214, 0.3));
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+body.theme-disco .message-sender {
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+/* 导入Google字体 */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=VT323&family=Special+Elite&family=Dancing+Script&display=swap');
+
+/* Synthwave主题特定的全局样式 */
+body.theme-synthwave {
+  font-family: 'VT323', 'Courier New', monospace;
+  letter-spacing: 0.5px;
+  line-height: 1.5;
+  color: #ffffff;
+  text-shadow: 0 0 5px rgba(255, 0, 255, 0.8);
+}
+
+/* 朋克风格主题特定的全局样式 */
+body.theme-punk {
+  font-family: 'Anarchist Typewriter', 'Special Elite', 'Courier New', monospace;
+  letter-spacing: -0.5px;
+  line-height: 1.4;
+  color: #ffffff;
+  transform: skew(-1deg, 0deg);
+}
+
+/* 迪斯科风格主题特定的全局样式 */
+body.theme-disco {
+  font-family: 'Boogie Night', 'Dancing Script', cursive;
+  letter-spacing: 0.8px;
+  line-height: 1.5;
+  color: #ffffff;
+} 
