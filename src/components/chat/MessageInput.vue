@@ -96,25 +96,4 @@ export default {
 .send-button:active {
   transform: translateY(0);
 }
-
-/* 文艺电影主题特定样式 */
-:global(.theme-cinematic) .message-input-container {
-  background-color: rgba(26, 26, 26, 0.7);
-  border-top: 1px solid rgba(138, 113, 88, 0.2);
-}
-
-:global(.theme-cinematic) .message-input {
-  background-color: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(138, 113, 88, 0.3);
-  font-family: 'Playfair Display', serif;
-  letter-spacing: 0.5px;
-}
-
-:global(.theme-cinematic) .send-button {
-  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-  border: 1px solid rgba(138, 113, 88, 0.3);
-  font-family: 'Playfair Display', serif;
-  letter-spacing: 1px;
-  font-size: 0.9rem;
-}
 </style> 

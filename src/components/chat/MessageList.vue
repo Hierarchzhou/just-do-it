@@ -97,6 +97,7 @@ export default {
 .message-avatar {
   margin-right: 0.75rem;
   flex-shrink: 0;
+  position: relative;
 }
 
 .avatar-img {
@@ -104,8 +105,30 @@ export default {
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: var(--avatar-border, 2px solid rgba(255, 255, 255, 0.1));
+  box-shadow: var(--avatar-shadow, 0 2px 4px rgba(0, 0, 0, 0.2));
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  z-index: 1;
+  background-color: #2f3136; /* Discord avatar background color */
+}
+
+.avatar-img:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.message-avatar::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: var(--online-indicator);
+  border-radius: 50%;
+  bottom: 0;
+  left: 0;
+  border: 2px solid var(--chat-background);
+  z-index: 2;
 }
 
 .message {
@@ -155,32 +178,6 @@ export default {
 .message-content {
   word-break: break-word;
   line-height: 1.4;
-}
-
-/* 文艺电影主题特定样式 */
-:global(.theme-cinematic) .message {
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background-color: rgba(40, 40, 40, 0.5); /* 半透明的深色 */
-}
-
-:global(.theme-cinematic) .message.self {
-  background-color: rgba(166, 124, 82, 0.2); /* 半透明的金棕色 */
-  border-color: rgba(166, 124, 82, 0.3);
-}
-
-:global(.theme-cinematic) .avatar-img {
-  border: 2px solid rgba(166, 124, 82, 0.3);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-
-:global(.theme-cinematic) .message-sender {
-  font-family: 'Playfair Display', serif;
-  letter-spacing: 0.5px;
-}
-
-:global(.theme-cinematic) .message-time {
-  font-style: italic;
 }
 
 .no-messages {

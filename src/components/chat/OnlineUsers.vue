@@ -111,33 +111,6 @@ export default {
   text-overflow: ellipsis;
 }
 
-/* 文艺电影主题特定样式 */
-:global(.theme-cinematic) .online-users-container {
-  background-color: rgba(26, 26, 26, 0.6);
-  border-left: 1px solid rgba(138, 113, 88, 0.2);
-}
-
-:global(.theme-cinematic) .online-title {
-  font-family: 'Playfair Display', serif;
-  letter-spacing: 0.5px;
-  border-bottom: 1px solid rgba(138, 113, 88, 0.2);
-}
-
-:global(.theme-cinematic) .avatar-img {
-  border: 1px solid rgba(138, 113, 88, 0.3);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-:global(.theme-cinematic) .user-item.current-user {
-  background-color: rgba(138, 113, 88, 0.1);
-  border: 1px solid rgba(138, 113, 88, 0.2);
-}
-
-:global(.theme-cinematic) .username {
-  font-family: 'Playfair Display', serif;
-  letter-spacing: 0.5px;
-}
-
 /* 响应式设计 */
 @media (max-width: 768px) {
   .online-users-container {

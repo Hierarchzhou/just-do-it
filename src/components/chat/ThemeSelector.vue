@@ -22,13 +22,7 @@ export default {
       selectedTheme: localStorage.getItem('chat-theme') || 'discord', // 从本地存储获取主题，默认为discord主题
       themes: [
         { id: 'discord', name: 'Discord风格' }, // Discord风格主题
-        { id: 'dark', name: '暗黑模式' }, // 暗黑模式主题
-        { id: 'light', name: '明亮模式' }, // 明亮模式主题
-        { id: 'retro', name: '复古风格' }, // 复古风格主题
-        { id: 'cinematic', name: '文艺电影' }, // 文艺电影风格主题
-        { id: 'synthwave', name: '80年代合成浪潮' }, // 80年代Synthwave主题
-        { id: 'punk', name: '朋克风格' }, // 朋克风格主题
-        { id: 'disco', name: '迪斯科风格' }  // 迪斯科风格主题
+        { id: 'dark', name: '暗黑模式' }  // 暗黑模式主题
       ]
     }
   },
@@ -49,13 +43,7 @@ export default {
       // 移除所有主题类
       document.body.classList.remove(
         'theme-discord', 
-        'theme-dark', 
-        'theme-light', 
-        'theme-retro', 
-        'theme-cinematic',
-        'theme-synthwave',
-        'theme-punk',
-        'theme-disco'
+        'theme-dark'
       );
       // 添加选择的主题类
       document.body.classList.add(`theme-${themeId}`);

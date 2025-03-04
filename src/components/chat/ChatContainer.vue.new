@@ -1,0 +1,332 @@
+﻿
+<template>
+  <div class="chat-container">
+    <!-- 鐢ㄦ埛鍚嶈緭鍏ョ晫闈紝褰撶敤鎴锋湭璁剧疆鏄电О鏃舵樉绀?-->
+    <UserNameInput 
+      v-if="!username" 
+      @set-username="setUsername" 
+    />
+    
+    <!-- 鑱婂ぉ鐣岄潰锛屽綋鐢ㄦ埛宸茶缃樀绉版椂鏄剧ず -->
+    <div v-else class="chat-interface">
+      <header class="chat-header">
+        <h2 class="chat-title">Vue鑱婂ぉ瀹?/h2>
+        <div class="user-info-container">
+          <ThemeSelector />
+          <div class="user-info">
+            <img :src="userAvatar" alt="澶村儚" class="user-avatar" style="width: 24px; height: 24px; bor
+der-radius: 50%;">
+            <span class="current-username">{{ username }}</span>
+          </div>
+        </div>
+      </header>
+      
+      <div class="chat-main">
+        <MessageList 
+          :messages="messages" 
+          :currentUsername="username" 
+          ref="messageList" 
+        />
+        <OnlineUsers 
+          :onlineUsers="onlineUsers" 
+          :currentUsername="username" 
+        />
+      </div>
+      
+      <MessageInput @send-message="sendMessage" />
+    </div>
+  </div>
+</template>
+
+<script>
+import UserNameInput from './UserNameInput.vue';
+import MessageList from './MessageList.vue';
+import MessageInput from './MessageInput.vue';
+import ThemeSelector from './ThemeSelector.vue';
+import OnlineUsers from './OnlineUsers.vue';
+import axios from 'axios';
+
+export default {
+  name: 'ChatContainer',
+  components: {
+    UserNameInput,
+    MessageList,
+    MessageInput,
+    ThemeSelector,
+    OnlineUsers
+  },
+  data() {
+    return {
+      username: '', // 鐢ㄦ埛鏄电О
+      userAvatar: '', // 鐢ㄦ埛澶村儚
+      messages: [], // 娑堟伅鍒楄〃
+      onlineUsers: [], // 鍦ㄧ嚎鐢ㄦ埛鍒楄〃
+      apiUrl: 'http://localhost:3001/api/messages', // 娑堟伅API鍦板潃
+      usersApiUrl: 'http://localhost:3001/api/users', // 鐢ㄦ埛API鍦板潃
+      pollingInterval: null, // 鐢ㄤ簬杞娑堟伅鐨勮鏃跺櫒
+      onlinePollingInterval: null, // 鐢ㄤ簬杞鍦ㄧ嚎鐢ㄦ埛鐨勮鏃跺櫒
+      currentTheme: localStorage.getItem('chat-theme') || 'discord', // 褰撳墠涓婚
+    }
+  },
+  created() {
+    // 浠巐ocalStorage鑾峰彇鐢ㄦ埛淇℃伅
+    const savedUsername = localStorage.getItem('chat-username');
+    const savedAvatar = localStorage.getItem('chat-avatar');
+    
+    if (savedUsername) {
+      this.username = savedUsername;
+    }
+    
+    if (savedAvatar) {
+      this.userAvatar = savedAvatar;
+    } else {
+      // 璁剧疆榛樿澶村儚
+      this.userAvatar = '/avatars/default.png';
+      localStorage.setItem('chat-avatar', this.userAvatar);
+    }
+    
+    // 濡傛灉鐢ㄦ埛宸茬櫥褰曪紝娉ㄥ唽鐢ㄦ埛
+    if (this.username) {
+      this.registerUser();
+    }
+  },
+  mounted() {
+    // 濡傛灉鐢ㄦ埛宸茬櫥褰曪紝鑾峰彇娑堟伅鍜屽湪绾跨敤鎴?
+    if (this.username) {
+      this.fetchMessages();
+      this.fetchOnlineUsers();
+      
+      // 璁剧疆杞
+      this.pollingInterval = setInterval(this.fetchMessages, 3000);
+      this.onlinePollingInterval = setInterval(this.fetchOnlineUsers, 5000);
+    }
+    
+    // 搴旂敤淇濆瓨鐨勪富棰?
+    document.body.classList.add(`theme-${this.currentTheme}`);
+  },
+  beforeUnmount() {
+    // 娓呴櫎杞
+    clearInterval(this.pollingInterval);
+    clearInterval(this.onlinePollingInterval);
+  },
+  methods: {
+    // 璁剧疆鐢ㄦ埛鍚嶅拰澶村儚
+    setUsername(userData) {
+      this.username = userData.username;
+      this.userAvatar = userData.avatar;
+      
+      // 淇濆瓨鍒發ocalStorage
+      localStorage.setItem('chat-username', this.username);
+      localStorage.setItem('chat-avatar', this.userAvatar);
+      
+      // 娉ㄥ唽鐢ㄦ埛
+      this.registerUser();
+      
+      // 鑾峰彇娑堟伅鍜屽湪绾跨敤鎴?
+      this.fetchMessages();
+      this.fetchOnlineUsers();
+      
+      // 璁剧疆杞
+      this.pollingInterval = setInterval(this.fetchMessages, 3000);
+      this.onlinePollingInterval = setInterval(this.fetchOnlineUsers, 5000);
+    },
+    
+    // 娉ㄥ唽鐢ㄦ埛
+    async registerUser() {
+      try {
+        await axios.post(`${this.usersApiUrl}/register`, {
+          username: this.username,
+          avatar: this.userAvatar
+        });
+        console.log('鐢ㄦ埛娉ㄥ唽鎴愬姛');
+      } catch (error) {
+        console.error('鐢ㄦ埛娉ㄥ唽澶辫触:', error);
+      }
+    },
+    
+    // 鑾峰彇娑堟伅
+    async fetchMessages() {
+      try {
+        const response = await axios.get(this.apiUrl);
+        this.messages = response.data;
+        // 婊氬姩鍒板簳閮?
+        this.$nextTick(() => {
+          if (this.$refs.messageList) {
+            this.$refs.messageList.scrollToBottom();
+          }
+        });
+      } catch (error) {
+        console.error('鑾峰彇娑堟伅澶辫触:', error);
+        // 寮€鍙戦樁娈靛鏋淎PI鏈氨缁紝浣跨敤妯℃嫙鏁版嵁
+        if (this.messages.length === 0) {
+          this.messages = [
+            { 
+              id: 1, 
+              sender: 'System', 
+              content: '娆㈣繋鏉ュ埌鑱婂ぉ瀹?', 
+              timestamp: new Date().toISOString(),
+              avatar: '/avatars/default.png'
+            }
+          ];
+        }
+      }
+    },
+    
+    // 鑾峰彇鍦ㄧ嚎鐢ㄦ埛
+    async fetchOnlineUsers() {
+      try {
+        const response = await axios.get(`${this.usersApiUrl}/online`);
+        this.onlineUsers = response.data;
+      } catch (error) {
+        console.error('鑾峰彇鍦ㄧ嚎鐢ㄦ埛澶辫触:', error);
+        // 寮€鍙戦樁娈靛鏋淎PI鏈氨缁紝浣跨敤妯℃嫙鏁版嵁
+        if (this.onlineUsers.length === 0) {
+          this.onlineUsers = [
+            { username: this.username, avatar: this.userAvatar }
+          ];
+        }
+      }
+    },
+    
+    // 鍙戦€佹秷鎭?
+    async sendMessage(content) {
+      if (!content.trim()) return;
+      
+      try {
+        const response = await axios.post(this.apiUrl, {
+          sender: this.username,
+          content: content,
+          avatar: this.userAvatar
+        });
+        
+        // 灏嗘柊娑堟伅娣诲姞鍒版秷鎭垪琛?
+        this.messages.push(response.data);
+        
+        // 婊氬姩鍒板簳閮?
+        this.$nextTick(() => {
+          if (this.$refs.messageList) {
+            this.$refs.messageList.scrollToBottom();
+          }
+        });
+      } catch (error) {
+        console.error('鍙戦€佹秷鎭け璐?', error);
+        
+        // 寮€鍙戦樁娈靛鏋淎PI鏈氨缁紝浣跨敤妯℃嫙鏁版嵁
+        const mockMessage = {
+          id: Date.now(),
+          sender: this.username,
+          content: content,
+          timestamp: new Date().toISOString(),
+          avatar: this.userAvatar
+        };
+        
+        this.messages.push(mockMessage);
+        
+        // 婊氬姩鍒板簳閮?
+        this.$nextTick(() => {
+          if (this.$refs.messageList) {
+            this.$refs.messageList.scrollToBottom();
+          }
+        });
+      }
+    }
+  }
+}
+</script>
+
+<style scoped>
+.chat-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--chat-background); /* 浣跨敤涓婚鍙橀噺 */
+  color: var(--text-color); /* 浣跨敤涓婚鍙橀噺 */
+  position: relative;
+  z-index: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.chat-interface {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  backdrop-filter: blur(5px); /* 娣诲姞妯＄硦鏁堟灉 */
+}
+
+.chat-header {
+  padding: 1rem 1.5rem;
+  background-color: var(--primary-color); /* 浣跨敤涓婚鍙橀噺 */
+  color: var(--header-color); /* 浣跨敤涓婚鍙橀噺 */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--header-shadow);
+  position: relative;
+  z-index: 2;
+}
+
+.chat-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.user-info-container {
+  display: flex;
+  align-items: center;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-left: 1rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 0.75rem;
+  border-radius: 2rem;
+  backdrop-filter: blur(5px);
+}
+
+.user-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.current-username {
+  margin-left: 0.5rem;
+  font-weight: 500;
+  color: var(--text-color);
+  mix-blend-mode: overlay;
+}
+
+.chat-main {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+/* 鏂囪壓鐢靛奖涓婚鐗瑰畾鏍峰紡 */
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+}
+
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(138, 113, 88, 0.3);
+}
+
+  border: 1px solid rgba(138, 113, 88, 0.5);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+</style> 
+
+

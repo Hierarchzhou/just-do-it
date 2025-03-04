@@ -3,8 +3,21 @@
     <div v-if="!username" class="login-container">
       <LoginForm @login="setUsername" />
     </div>
-    <div v-else>
-      <ChatContainer :currentUser="{ username, avatar }" />
+    <div v-else class="discord-layout">
+      <!-- 服务器列表 -->
+      <ServerList />
+      
+      <!-- 在线用户列表 - 将在ChatContainer中移出并放在这里 -->
+      <OnlineUsersSidebar 
+        :onlineUsers="onlineUsers" 
+        :currentUsername="username"
+      />
+      
+      <!-- 聊天容器 -->
+      <ChatContainer 
+        :currentUser="{ username, avatar }" 
+        @update-online-users="updateOnlineUsers"
+      />
     </div>
   </div>
 </template>
@@ -12,17 +25,22 @@
 <script>
 import LoginForm from './components/auth/LoginForm.vue'
 import ChatContainer from './components/chat/ChatContainer.vue'
+import ServerList from './components/chat/ServerList.vue'
+import OnlineUsersSidebar from './components/chat/OnlineUsersSidebar.vue'
 
 export default {
   name: 'App',
   components: {
     LoginForm,
-    ChatContainer
+    ChatContainer,
+    ServerList,
+    OnlineUsersSidebar
   },
   data() {
     return {
       username: '',
-      avatar: ''
+      avatar: '',
+      onlineUsers: [] // 在线用户列表移到App组件中管理
     }
   },
   created() {
@@ -49,6 +67,11 @@ export default {
       if (this.avatar) {
         localStorage.setItem('chat-avatar', this.avatar)
       }
+    },
+    
+    // 更新在线用户列表
+    updateOnlineUsers(users) {
+      this.onlineUsers = users;
     }
   }
 }
@@ -78,28 +101,6 @@ body, html {
   flex-direction: column;
 }
 
-/* 背景图片设置 */
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url('/src/assets/images/cinematic-bg.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  opacity: 0;
-  z-index: -1;
-  transition: opacity 0.5s ease;
-}
-
-/* 文艺电影主题背景 */
-body.theme-cinematic::before {
-  opacity: 0.2;
-}
-
 .app-container {
   min-height: 100vh;
   display: flex;
@@ -114,17 +115,39 @@ body.theme-cinematic::before {
   padding: 1rem;
 }
 
+/* Discord布局 */
+.discord-layout {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
   .chat-main {
     flex-direction: column;
   }
   
-  .online-users {
+  .discord-layout {
+    flex-direction: column;
+  }
+  
+  .server-list {
     width: 100% !important;
-    border-left: none !important;
-    border-top: 1px solid var(--border-color);
-    max-height: 200px;
+    height: auto !important;
+    flex-direction: row !important;
+    padding: 8px !important;
+  }
+  
+  .server-items {
+    flex-direction: row !important;
+    padding: 0 8px !important;
+  }
+  
+  .server-item {
+    margin-right: 8px !important;
+    margin-bottom: 0 !important;
   }
 }
 </style>

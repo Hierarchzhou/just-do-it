@@ -69,9 +69,7 @@ export default {
       ],
       themes: [
         { id: 'discord', name: 'Discord' },
-        { id: 'light', name: '明亮' },
-        { id: 'dark', name: '暗黑' },
-        { id: 'cinematic', name: '文艺电影' }
+        { id: 'dark', name: '暗黑' }
       ]
     }
   },
@@ -89,7 +87,7 @@ export default {
       this.selectedTheme = themeId;
       
       // 移除所有主题类
-      document.body.classList.remove('theme-discord', 'theme-light', 'theme-dark', 'theme-cinematic');
+      document.body.classList.remove('theme-discord', 'theme-dark');
       
       // 添加选中的主题类
       document.body.classList.add(`theme-${themeId}`);
@@ -231,49 +229,5 @@ export default {
   background-color: #cccccc;
   cursor: not-allowed;
   transform: none;
-}
-
-/* 文艺电影主题特定样式 */
-:global(.theme-cinematic) .login-form {
-  background-color: rgba(26, 26, 26, 0.7);
-  border: 1px solid rgba(166, 124, 82, 0.3);
-}
-
-:global(.theme-cinematic) .form-title {
-  font-family: 'Playfair Display', serif;
-  color: #e0e0e0;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-:global(.theme-cinematic) .form-group input {
-  background-color: rgba(40, 40, 40, 0.5);
-  border: 1px solid rgba(166, 124, 82, 0.3);
-  color: #e0e0e0;
-}
-
-:global(.theme-cinematic) .avatar-option.selected {
-  border-color: var(--primary-color, #a67c52);
-  box-shadow: 0 0 10px rgba(166, 124, 82, 0.5);
-}
-
-:global(.theme-cinematic) .theme-option {
-  background-color: rgba(40, 40, 40, 0.5);
-  border: 1px solid rgba(166, 124, 82, 0.2);
-}
-
-:global(.theme-cinematic) .theme-option.selected {
-  background-color: var(--primary-color, #a67c52);
-  border-color: rgba(166, 124, 82, 0.5);
-}
-
-:global(.theme-cinematic) .login-button {
-  background: linear-gradient(135deg, var(--primary-color, #a67c52), var(--secondary-color, #8a6642));
-  border: 1px solid rgba(166, 124, 82, 0.5);
-  font-family: 'Playfair Display', serif;
-  letter-spacing: 0.5px;
-}
-
-:global(.theme-cinematic) .login-button:hover {
-  background: linear-gradient(135deg, var(--secondary-color, #8a6642), var(--primary-color, #a67c52));
 }
 </style> 

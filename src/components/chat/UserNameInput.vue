@@ -5,14 +5,15 @@
     <div class="avatar-selection">
       <h3>选择头像</h3>
       <div class="avatar-options">
+        <!-- 默认头像选项 -->
         <div 
-          v-for="i in 6" 
-          :key="i"
+          v-for="(avatar, index) in defaultAvatars" 
+          :key="index"
           class="avatar-option"
-          :class="{ selected: selectedAvatar === `/avatars/avatar${i}.png` }"
-          @click="selectAvatar(`/avatars/avatar${i}.png`)"
+          :class="{ selected: selectedAvatar === avatar }"
+          @click="selectAvatar(avatar)"
         >
-          <img :src="`/avatars/avatar${i}.png`" alt="头像选项" class="avatar-img" />
+          <img :src="avatar" alt="头像选项" class="avatar-img" />
         </div>
         
         <!-- 自定义头像上传 -->
@@ -44,6 +45,7 @@
         placeholder="输入昵称..." 
         @keyup.enter="setUsername"
         class="username-input"
+        @input="updateUsernameAvatar"
       />
     </div>
     
@@ -66,7 +68,7 @@
     <button 
       @click="setUsername" 
       class="enter-button"
-      :disabled="!username.trim() || !selectedAvatar"
+      :disabled="!username.trim()"
     >
       进入聊天室
     </button>
@@ -74,27 +76,66 @@
 </template>
 
 <script>
+import { getRandomAvatarUrl, getRandomDefaultAvatarUrl } from '../../utils/avatarUtils';
+
 export default {
   name: 'UserNameInput',
   data() {
     return {
       username: '', // 用户昵称
-      selectedAvatar: '/avatars/avatar1.png', // 默认选择第一个头像
+      selectedAvatar: '', // 选中的头像
       customAvatarPreview: null, // 自定义头像预览
       isCustomAvatarSelected: false, // 是否选择了自定义头像
       selectedTheme: 'discord', // 默认主题
       themes: [
         { id: 'discord', name: 'Discord' },
-        { id: 'light', name: '明亮' },
-        { id: 'dark', name: '暗黑' },
-        { id: 'cinematic', name: '文艺电影' }
-      ]
+        { id: 'dark', name: '暗黑' }
+      ],
+      defaultAvatars: [] // 默认头像列表
     }
   },
+  created() {
+    // 从 localStorage 获取保存的主题
+    const savedTheme = localStorage.getItem('chat-theme');
+    if (savedTheme) {
+      this.selectedTheme = savedTheme;
+      this.selectTheme(savedTheme);
+    }
+    
+    // 生成6个默认头像
+    this.generateDefaultAvatars();
+  },
   methods: {
+    // 生成默认头像
+    generateDefaultAvatars() {
+      // 清空数组
+      this.defaultAvatars = [];
+      
+      // 生成6个随机头像
+      for (let i = 0; i < 6; i++) {
+        this.defaultAvatars.push(getRandomDefaultAvatarUrl());
+      }
+      
+      // 默认选择第一个头像
+      this.selectedAvatar = this.defaultAvatars[0];
+    },
+    
+    // 根据用户名更新头像
+    updateUsernameAvatar() {
+      if (this.username.trim() && !this.isCustomAvatarSelected) {
+        // 如果用户输入了用户名，并且没有选择自定义头像，则根据用户名生成头像
+        this.selectedAvatar = getRandomAvatarUrl(this.username);
+      }
+    },
+    
     // 设置用户名和头像
     setUsername() {
       if (this.username.trim()) {
+        // 如果没有选择头像，则根据用户名生成一个
+        if (!this.selectedAvatar) {
+          this.selectedAvatar = getRandomAvatarUrl(this.username);
+        }
+        
         // 将用户名和头像传递给父组件
         this.$emit('set-username', {
           username: this.username,
@@ -118,7 +159,7 @@ export default {
       this.selectedTheme = themeId;
       
       // 移除所有主题类
-      document.body.classList.remove('theme-discord', 'theme-light', 'theme-dark', 'theme-cinematic');
+      document.body.classList.remove('theme-discord', 'theme-dark');
       
       // 添加选中的主题类
       document.body.classList.add(`theme-${themeId}`);
@@ -153,14 +194,6 @@ export default {
       
       // 读取文件
       reader.readAsDataURL(file);
-    }
-  },
-  created() {
-    // 从 localStorage 获取保存的主题
-    const savedTheme = localStorage.getItem('chat-theme');
-    if (savedTheme) {
-      this.selectedTheme = savedTheme;
-      this.selectTheme(savedTheme);
     }
   }
 }
@@ -330,17 +363,8 @@ export default {
   background: linear-gradient(135deg, #7289da, #5c6bc0);
 }
 
-.theme-preview-light {
-  background: linear-gradient(135deg, #4f9eed, #ffffff);
-  border: 1px solid #e0e0e0;
-}
-
 .theme-preview-dark {
   background: linear-gradient(135deg, #bb86fc, #1e1e1e);
-}
-
-.theme-preview-cinematic {
-  background: linear-gradient(135deg, #8a7158, #1a1a1a);
 }
 
 .theme-name {
@@ -374,33 +398,5 @@ export default {
 .enter-button:disabled {
   background-color: rgba(128, 128, 128, 0.3);
   cursor: not-allowed;
-}
-
-/* 文艺电影主题特定样式 */
-:global(.theme-cinematic) .username-input-container {
-  background-color: rgba(26, 26, 26, 0.7);
-  border: 1px solid rgba(138, 113, 88, 0.3);
-}
-
-:global(.theme-cinematic) .title {
-  font-family: 'Playfair Display', serif;
-  letter-spacing: 1px;
-  color: #f0e6d8;
-}
-
-:global(.theme-cinematic) .username-input {
-  background-color: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(138, 113, 88, 0.3);
-  font-family: 'Playfair Display', serif;
-}
-
-:global(.theme-cinematic) .enter-button {
-  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-  font-family: 'Playfair Display', serif;
-  letter-spacing: 1px;
-}
-
-:global(.theme-cinematic) .avatar-option.selected {
-  border-color: #8a7158;
 }
 </style> 
