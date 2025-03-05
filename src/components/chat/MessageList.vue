@@ -1,5 +1,5 @@
 <template>
-  <div class="message-list" ref="messageContainer">
+  <div class="message-list" ref="messageList">
     <div v-if="messages.length === 0" class="no-messages">
       暂无消息，开始聊天吧！
     </div>
@@ -11,21 +11,36 @@
       >
         <div class="message-avatar">
           <img 
-            :src="message.avatar || getFallbackAvatarUrl()" 
-            alt="头像" 
+            :src="message.avatar || defaultAvatar" 
+            :alt="message.username" 
             class="avatar-img" 
             @error="handleAvatarError"
           />
+          <div 
+            v-if="message.sender === currentUsername"
+            :class="['status-indicator', userStatus]"
+          ></div>
+          <div 
+            v-else
+            class="status-indicator online"
+          ></div>
         </div>
         <div 
           class="message"
           :class="{ 'self': message.sender === currentUsername, 'other': message.sender !== currentUsername }"
         >
           <div class="message-header">
-            <span class="message-sender">{{ message.sender }}</span>
-            <span class="message-time">{{ formatTime(message.timestamp) }}</span>
+            <span class="username">{{ message.username }}</span>
+            <span class="timestamp">{{ formatTime(message.timestamp) }}</span>
           </div>
-          <div class="message-content">{{ message.content }}</div>
+          <div class="message-body">
+            <template v-if="isSticker(message.content)">
+              <StickerMessage :sticker-id="extractStickerId(message.content)" />
+            </template>
+            <template v-else>
+              {{ message.content }}
+            </template>
+          </div>
         </div>
       </div>
     </div>
@@ -33,10 +48,16 @@
 </template>
 
 <script>
-import { getFallbackAvatarUrl, handleAvatarError } from '../../utils/avatarUtils';
+import { defineComponent, computed, ref } from 'vue'
+import { useStore } from 'vuex'
+import StickerMessage from './StickerMessage.vue'
+import { formatTimestamp } from '@/utils/time'
 
-export default {
+export default defineComponent({
   name: 'MessageList',
+  components: {
+    StickerMessage
+  },
   props: {
     messages: {
       type: Array,
@@ -47,51 +68,57 @@ export default {
       default: ''
     }
   },
-  methods: {
-    formatTime(timestamp) {
-      if (!timestamp) return '';
-      
-      const date = new Date(timestamp);
-      const now = new Date();
-      const diffMs = now - date;
-      const diffMins = Math.floor(diffMs / 60000);
-      const diffHours = Math.floor(diffMins / 60);
-      const diffDays = Math.floor(diffHours / 24);
-      
-      // 今天的消息显示时间
-      if (diffDays < 1) {
-        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      }
-      
-      // 昨天的消息
-      if (diffDays === 1) {
-        return '昨天 ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      }
-      
-      // 更早的消息显示完整日期
-      return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    },
+  setup() {
+    const store = useStore()
+    const defaultAvatar = 'https://api.dicebear.com/7.x/bottts/svg'
+    const messageList = ref(null)
     
-    scrollToBottom() {
-      if (this.$refs.messageContainer) {
-        this.$refs.messageContainer.scrollTop = this.$refs.messageContainer.scrollHeight;
+    // 获取当前状态，使用命名空间
+    const userStatus = computed(() => store.getters['userStatus/currentStatus'])
+
+    const handleAvatarError = (event) => {
+      event.target.src = defaultAvatar
+    }
+
+    const isSticker = (content) => {
+      return typeof content === 'string' && content.startsWith('[sticker:') && content.endsWith(']')
+    }
+
+    const extractStickerId = (content) => {
+      if (!content) return null
+      const match = content.match(/\[sticker:(.+?)\]/)
+      return match ? match[1] : null
+    }
+
+    const scrollToBottom = () => {
+      if (messageList.value) {
+        messageList.value.scrollTop = messageList.value.scrollHeight
       }
-    },
-    
-    // 获取备用头像URL
-    getFallbackAvatarUrl() {
-      return getFallbackAvatarUrl();
-    },
-    
-    // 处理头像加载错误
-    handleAvatarError(event) {
-      handleAvatarError(event);
+    }
+
+    return {
+      defaultAvatar,
+      userStatus,
+      handleAvatarError,
+      formatTime: formatTimestamp,
+      isSticker,
+      extractStickerId,
+      scrollToBottom,
+      messageList
     }
   },
-  updated() {
-    this.scrollToBottom();
+  watch: {
+    messages: {
+      handler() {
+        this.scrollToBottom()
+      },
+      deep: true
+    }
+  },
+  mounted() {
+    this.scrollToBottom()
   }
-}
+})
 </script>
 
 <style scoped>
@@ -133,6 +160,36 @@ export default {
 .avatar-img:hover {
   transform: scale(1.1);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* 添加状态指示器样式 */
+.status-indicator {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: #747f8d;
+  border: 2px solid var(--chat-background);
+  z-index: 2;
+  transition: background-color 0.2s ease;
+}
+
+.status-indicator.online {
+  background-color: #43b581;
+}
+
+.status-indicator.away {
+  background-color: #faa61a;
+}
+
+.status-indicator.busy {
+  background-color: #f04747;
+}
+
+.status-indicator.invisible {
+  background-color: #747f8d;
 }
 
 .message-avatar::after {
@@ -182,17 +239,17 @@ export default {
   opacity: 0.8;
 }
 
-.message-sender {
+.username {
   font-weight: bold;
 }
 
-.message-time {
+.timestamp {
   font-size: 0.75rem;
   opacity: 0.7;
   margin-left: 0.75rem;
 }
 
-.message-content {
+.message-body {
   word-break: break-word;
   line-height: 1.4;
 }
@@ -203,5 +260,11 @@ export default {
   margin-top: 2rem;
   font-style: italic;
   opacity: 0.7;
+}
+
+/* 表情包消息样式 */
+.message-body :deep(.sticker-message) {
+  display: inline-block;
+  margin: 0.25rem 0;
 }
 </style> 
