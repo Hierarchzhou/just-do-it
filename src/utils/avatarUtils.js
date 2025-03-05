@@ -12,17 +12,27 @@ const avatarColors = [
   '593695', // Discord紫
   '747f8d',  // Discord灰
   '2c2f33', // Discord深灰
-  '99aab5'  // Discord浅灰
+  '99aab5',  // Discord浅灰
+  'ff6b6b', // 珊瑚红
+  '4ecdc4', // 薄荷绿
+  '45b7d1', // 天空蓝
+  'a67f5d', // 暖棕色
+  'b056db', // 梦幻紫
+  'f7d794'  // 温暖黄
 ];
 
 // 预定义的头像样式
 const avatarStyles = [
-  'initials', // 首字母
-  'identicon', // 几何图案
-  'bottts',    // 机器人
+  'micah',      // 现代简约风格
   'avataaars',  // 卡通人物
-  'jdenticon',  // 几何图案2
-  'gridy'       // 网格图案
+  'bottts',     // 机器人风格
+  'personas',   // 像素艺术风格
+  'thumbs',     // 拇指风格
+  'lorelei',    // 可爱风格
+  'notionists', // 商务风格
+  'adventurer', // 冒险家风格
+  'fun-emoji',  // 表情符号风格
+  'big-smile'   // 微笑风格
 ];
 
 /**
@@ -65,19 +75,10 @@ export function getRandomDefaultAvatarUrl() {
     const style = avatarStyles[styleIndex];
     
     // 生成一个随机的种子
-    const seed = Math.floor(Math.random() * 1000);
-    
-    // 如果是initials样式，生成随机字母
-    if (style === 'initials') {
-      const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      const letter1 = letters.charAt(Math.floor(Math.random() * letters.length));
-      const letter2 = letters.charAt(Math.floor(Math.random() * letters.length));
-      
-      return `https://ui-avatars.com/api/?name=${letter1}${letter2}&background=${color}&color=fff&size=200`;
-    }
+    const seed = Math.floor(Math.random() * 10000);
     
     // 使用DiceBear API生成多样化的头像
-    return `https://avatars.dicebear.com/api/${style}/${seed}.svg?background=%23${color}`;
+    return `https://api.dicebear.com/6.x/${style}/svg?seed=${seed}&backgroundColor=${color}`;
   } catch (error) {
     console.error('生成随机头像URL失败:', error);
     return getFallbackAvatarUrl();

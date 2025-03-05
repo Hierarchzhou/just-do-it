@@ -18,6 +18,7 @@
               alt="用户头像" 
               class="user-avatar"
               @error="handleAvatarError"
+              @click="openProfileEditor" 
             >
             <span class="current-username">{{ username }}</span>
           </div>
@@ -34,6 +35,14 @@
       
       <MessageInput @send-message="sendMessage" />
     </div>
+    
+    <!-- 个人资料编辑器 -->
+    <UserProfileEditor 
+      :isOpen="showProfileEditor"
+      :currentUserInfo="currentUserInfo"
+      @close="closeProfileEditor"
+      @update-profile="updateProfile"
+    />
   </div>
 </template>
 
@@ -42,6 +51,7 @@ import UserNameInput from './UserNameInput.vue';
 import MessageList from './MessageList.vue';
 import MessageInput from './MessageInput.vue';
 import ThemeSelector from './ThemeSelector.vue';
+import UserProfileEditor from './UserProfileEditor.vue';
 import axios from 'axios';
 import { handleAvatarError, getFallbackAvatarUrl } from '../../utils/avatarUtils';
 
@@ -51,7 +61,8 @@ export default {
     UserNameInput,
     MessageList,
     MessageInput,
-    ThemeSelector
+    ThemeSelector,
+    UserProfileEditor
   },
   props: {
     // 当前用户信息
@@ -74,6 +85,8 @@ export default {
       pollingInterval: null, // 用于轮询消息的计时器
       onlinePollingInterval: null, // 用于轮询在线用户的计时器
       currentTheme: localStorage.getItem('chat-theme') || 'discord', // 当前主题
+      showProfileEditor: false, // 是否显示个人资料编辑器
+      currentUserInfo: {} // 当前用户信息
     }
   },
   watch: {
@@ -262,6 +275,38 @@ export default {
     // 获取备用头像URL
     getFallbackAvatarUrl() {
       return getFallbackAvatarUrl();
+    },
+    // 打开个人资料编辑器
+    openProfileEditor() {
+      this.showProfileEditor = true;
+      this.currentUserInfo = {
+        username: this.username,
+        avatar: this.userAvatar
+      };
+    },
+    // 关闭个人资料编辑器
+    closeProfileEditor() {
+      this.showProfileEditor = false;
+    },
+    // 更新用户信息
+    updateProfile(updatedInfo) {
+      this.username = updatedInfo.username;
+      this.userAvatar = updatedInfo.avatar;
+      
+      // 保存到localStorage
+      localStorage.setItem('chat-username', this.username);
+      localStorage.setItem('chat-avatar', this.userAvatar);
+      
+      // 注册用户
+      this.registerUser();
+      
+      // 获取消息和在线用户
+      this.fetchMessages();
+      this.fetchOnlineUsers();
+      
+      // 设置轮询
+      this.pollingInterval = setInterval(this.fetchMessages, 3000);
+      this.onlinePollingInterval = setInterval(this.fetchOnlineUsers, 5000);
     }
   }
 }

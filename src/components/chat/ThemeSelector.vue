@@ -19,10 +19,10 @@ export default {
   name: 'ThemeSelector',
   data() {
     return {
-      selectedTheme: localStorage.getItem('chat-theme') || 'discord', // 从本地存储获取主题，默认为discord主题
+      selectedTheme: localStorage.getItem('chat-theme') || 'natural', // 默认为自然韵律主题
       themes: [
-        { id: 'discord', name: 'Discord风格' }, // Discord风格主题
-        { id: 'dark', name: '暗黑模式' }  // 暗黑模式主题
+        { id: 'natural', name: '自然韵律' },  // 自然韵律主题
+        { id: 'modern', name: '现代清新' }  // 现代清新主题
       ]
     }
   },
@@ -42,8 +42,8 @@ export default {
     applyTheme(themeId) {
       // 移除所有主题类
       document.body.classList.remove(
-        'theme-discord', 
-        'theme-dark'
+        'theme-natural',
+        'theme-modern'
       );
       // 添加选择的主题类
       document.body.classList.add(`theme-${themeId}`);
@@ -62,16 +62,21 @@ export default {
 .theme-select {
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
-  border: 1px solid #ccc;
-  background-color: white;
+  border: 1px solid var(--primary-color);
+  background-color: var(--input-background);
+  color: var(--text-color);
   margin-left: 0.5rem;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-/* 在暗黑模式下的样式 */
-:global(.theme-dark) .theme-select {
-  background-color: #2c2f33;
-  color: white;
-  border-color: #1e2124;
+.theme-select:hover {
+  border-color: var(--secondary-color);
+  background-color: var(--other-message-bg);
+}
+
+.theme-select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--primary-color);
 }
 </style> 

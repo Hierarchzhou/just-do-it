@@ -1,92 +1,159 @@
 <template>
   <div class="avatar-selector">
-    <div class="avatar-preview" @click="showOptions = !showOptions">
-      <img :src="currentAvatar" alt="头像" class="avatar-img" />
-      <div class="edit-overlay">
-        <span class="edit-icon">✏️</span>
+    <!-- 头像预览区域 -->
+    <div class="avatar-preview" @click="triggerFileInput">
+      <div v-if="previewUrl" class="avatar-preview-container">
+        <img :src="previewUrl" alt="Avatar preview" class="preview-image" />
+        <div class="avatar-hover-effect">
+          <span class="change-text">更换头像</span>
+        </div>
+      </div>
+      <div v-else class="empty-preview">
+        <div class="default-avatar">
+          <img :src="getRandomDefaultAvatarUrl()" alt="Default avatar" />
+        </div>
+        <span>点击选择头像</span>
       </div>
     </div>
-    
-    <div v-if="showOptions" class="avatar-options">
-      <div class="options-header">
-        <h4>选择头像</h4>
-        <button class="close-btn" @click="showOptions = false">×</button>
-      </div>
-      
-      <div class="avatar-grid">
-        <div 
-          v-for="(avatar, index) in avatarOptions" 
-          :key="index"
-          class="avatar-option"
-          :class="{ 'selected': avatar === currentAvatar }"
-          @click="selectAvatar(avatar)"
+
+    <!-- 头像样式选择器 -->
+    <div class="style-selector">
+      <div class="style-categories">
+        <button 
+          v-for="style in avatarStyles" 
+          :key="style"
+          class="style-button"
+          :class="{ active: selectedStyle === style }"
+          @click="selectStyle(style)"
         >
-          <img :src="avatar" alt="头像选项" class="option-img" />
+          {{ getStyleName(style) }}
+        </button>
+      </div>
+    </div>
+
+    <!-- 头像网格 -->
+    <div class="avatar-grid">
+      <div 
+        v-for="(avatar, index) in generatedAvatars" 
+        :key="index"
+        class="avatar-option"
+        :class="{ selected: selectedAvatar === avatar }"
+        @click="selectAvatar(avatar)"
+      >
+        <img :src="avatar" alt="Avatar option" />
+        <div class="hover-effect">
+          <span class="select-text">选择</span>
         </div>
       </div>
       
-      <div class="custom-url">
+      <!-- 刷新按钮 -->
+      <div class="avatar-option refresh-option" @click="regenerateAvatars">
+        <div class="refresh-icon">
+          <span>↻</span>
+          <span class="refresh-text">换一批</span>
+        </div>
+      </div>
+      
+      <!-- 自定义上传选项 -->
+      <div class="avatar-option upload-option">
+        <label for="avatar-upload" class="upload-label">
+          <div class="upload-icon">
+            <span>+</span>
+            <span class="upload-text">上传图片</span>
+          </div>
+        </label>
         <input 
-          v-model="customUrl" 
-          type="text" 
-          placeholder="输入自定义头像URL" 
-          class="url-input"
+          type="file" 
+          id="avatar-upload" 
+          @change="handleFileSelect" 
+          accept="image/*"
+          style="display: none"
         />
-        <button @click="useCustomUrl" class="url-btn">使用</button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { getRandomDefaultAvatarUrl, avatarStyles } from '../../utils/avatarUtils';
+
 export default {
-  name: 'AvatarSelector', // 组件名称
-  props: {
-    username: { // 用户名
-      type: String,
-      required: true
-    },
-    initialAvatar: { // 初始头像
-      type: String,
-      default: ''
-    }
-  },
+  name: 'AvatarSelector',
   data() {
     return {
-      showOptions: false, // 是否显示选项
-      currentAvatar: this.initialAvatar || this.getDefaultAvatar(), // 当前选择的头像
-      customUrl: '', // 自定义URL输入
-      // 预设头像选项
-      avatarOptions: [
-        'https://ui-avatars.com/api/?name=A&background=5865F2&color=fff',
-        'https://ui-avatars.com/api/?name=B&background=ED4245&color=fff',
-        'https://ui-avatars.com/api/?name=C&background=43B581&color=fff',
-        'https://ui-avatars.com/api/?name=D&background=FAA61A&color=fff',
-        'https://ui-avatars.com/api/?name=E&background=9B59B6&color=fff',
-        'https://ui-avatars.com/api/?name=F&background=3498DB&color=fff',
-        'https://ui-avatars.com/api/?name=G&background=E67E22&color=fff',
-        'https://ui-avatars.com/api/?name=H&background=1ABC9C&color=fff'
-      ]
+      selectedStyle: avatarStyles[0],
+      selectedAvatar: '',
+      previewUrl: null,
+      generatedAvatars: [],
+      avatarStyles
     }
   },
+  created() {
+    this.generateAvatarSet();
+  },
   methods: {
-    // 获取默认头像
-    getDefaultAvatar() {
-      return `https://ui-avatars.com/api/?name=${encodeURIComponent(this.username)}&background=random`;
+    // 生成一组头像
+    generateAvatarSet() {
+      this.generatedAvatars = Array(8).fill(null).map(() => getRandomDefaultAvatarUrl());
+    },
+    
+    // 选择头像样式
+    selectStyle(style) {
+      this.selectedStyle = style;
+      this.generateAvatarSet();
+    },
+    
+    // 获取样式名称的中文显示
+    getStyleName(style) {
+      const styleNames = {
+        'micah': '简约',
+        'avataaars': '卡通',
+        'bottts': '机器人',
+        'personas': '像素',
+        'thumbs': '拇指',
+        'lorelei': '可爱',
+        'notionists': '商务',
+        'adventurer': '冒险',
+        'fun-emoji': '表情',
+        'big-smile': '微笑'
+      };
+      return styleNames[style] || style;
     },
     
     // 选择头像
     selectAvatar(avatar) {
-      this.currentAvatar = avatar;
-      this.showOptions = false;
-      this.$emit('avatar-selected', avatar); // 发送选择的头像到父组件
+      this.selectedAvatar = avatar;
+      this.previewUrl = avatar;
+      this.$emit('avatar-selected', avatar);
     },
     
-    // 使用自定义URL
-    useCustomUrl() {
-      if (this.customUrl.trim()) {
-        this.selectAvatar(this.customUrl.trim());
+    // 重新生成头像
+    regenerateAvatars() {
+      this.generateAvatarSet();
+    },
+    
+    // 处理文件选择
+    handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      if (!file.type.match('image.*')) {
+        alert('请上传图片文件');
+        return;
       }
+      
+      if (file.size > 2 * 1024 * 1024) {
+        alert('图片大小不能超过 2MB');
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.previewUrl = e.target.result;
+        this.selectedAvatar = e.target.result;
+        this.$emit('avatar-selected', e.target.result);
+      };
+      reader.readAsDataURL(file);
     }
   }
 }
@@ -94,135 +161,171 @@ export default {
 
 <style scoped>
 .avatar-selector {
-  position: relative;
-  display: inline-block;
+  width: 100%;
+  max-width: 600px;
+  padding: 1.5rem;
+  background: var(--chat-background);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .avatar-preview {
-  position: relative;
-  width: 40px;
-  height: 40px;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 2rem;
   border-radius: 50%;
-  cursor: pointer;
   overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+  padding: 3px;
 }
 
-.avatar-img {
+.preview-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 50%;
 }
 
-.edit-overlay {
+.avatar-hover-effect, .hover-effect {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   opacity: 0;
-  transition: opacity 0.2s;
+  transition: opacity 0.3s ease;
 }
 
-.avatar-preview:hover .edit-overlay {
+.avatar-preview:hover .avatar-hover-effect,
+.avatar-option:hover .hover-effect {
   opacity: 1;
 }
 
-.edit-icon {
-  font-size: 16px;
+.change-text, .select-text {
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
-.avatar-options {
-  position: absolute;
-  top: 45px;
-  left: 0;
-  width: 250px;
-  background-color: var(--message-background);
-  border: 1px solid var(--input-border-color);
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  z-index: 10;
-  padding: 1rem;
+.style-selector {
+  margin-bottom: 2rem;
 }
 
-.options-header {
+.style-categories {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
 }
 
-.options-header h4 {
-  margin: 0;
-  color: var(--text-color);
-}
-
-.close-btn {
-  background: none;
+.style-button {
+  padding: 0.5rem 1rem;
   border: none;
-  font-size: 1.25rem;
-  cursor: pointer;
+  border-radius: 20px;
+  background: var(--input-background);
   color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.style-button.active {
+  background: var(--primary-color);
+  color: white;
+  transform: scale(1.05);
 }
 
 .avatar-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--input-background);
+  border-radius: 8px;
 }
 
 .avatar-option {
-  width: 50px;
-  height: 50px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   overflow: hidden;
   cursor: pointer;
-  border: 2px solid transparent;
-  transition: border-color 0.2s;
+  position: relative;
+  transition: all 0.3s ease;
+  border: 3px solid transparent;
 }
 
-.avatar-option:hover {
-  border-color: var(--primary-color);
-}
-
-.avatar-option.selected {
-  border-color: var(--primary-color);
-}
-
-.option-img {
+.avatar-option img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.custom-url {
+.avatar-option.selected {
+  border-color: var(--primary-color);
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.refresh-option, .upload-option {
   display: flex;
-  margin-top: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  background: var(--chat-background);
+  border: 2px dashed var(--border-color);
 }
 
-.url-input {
-  flex: 1;
-  padding: 0.5rem;
-  border: 1px solid var(--input-border-color);
-  border-radius: 0.25rem 0 0 0.25rem;
-  background-color: var(--input-background);
-  color: var(--input-text-color);
+.refresh-icon, .upload-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--text-color);
+  font-size: 1.5rem;
 }
 
-.url-btn {
-  padding: 0.5rem;
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  border-radius: 0 0.25rem 0.25rem 0;
-  cursor: pointer;
+.refresh-text, .upload-text {
+  font-size: 0.8rem;
+  margin-top: 0.3rem;
 }
 
-.url-btn:hover {
-  background-color: var(--secondary-color);
+.empty-preview {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--input-background);
+  border-radius: 50%;
+}
+
+.default-avatar {
+  width: 80%;
+  height: 80%;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.default-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 480px) {
+  .avatar-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .style-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
 }
 </style> 
